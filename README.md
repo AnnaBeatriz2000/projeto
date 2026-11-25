@@ -17,3 +17,22 @@ Ative o ambiente virtual no PowerShell:
 ```powershell
 .\venv\Scripts\Activate.ps1
 ```
+Se o PowerShell bloquear a execução do script, permita a execução apenas na sessão atual:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
+
+### 4. Instalando Django e o conector MySQL
+
+Com o ambiente virtual ativado, instale o Django diretamente pelo terminal do VS Code:
+
+```powershell
+pip install django
+```
+
+Instale o conector para comunicação com o MySQL:
+
+```powershell
+pip install mysqlclient
+```
