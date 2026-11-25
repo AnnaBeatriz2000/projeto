@@ -68,3 +68,36 @@ python manage.py runserver
 ```
 
 Abra [http://127.0.0.1:8000/](http://127.0.0.1:8000/) no navegador. Se a página inicial do Django aparecer, o projeto foi criado corretamente. Para interromper o servidor, pressione **Ctrl + C** no terminal.
+
+### 6. Criando o banco de dados MySQL
+
+Com o MySQL instalado, abra o MySQL Workbench, conecte-se ao servidor local e execute:
+
+```sql
+CREATE DATABASE portal_cursos;
+```
+
+### 6.1 Configurando a conexão no Django
+
+Abra `portal_cursos/settings.py`, localize `DATABASES` e configure a conexão usando o `mysqlclient` instalado anteriormente:
+
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'portal_cursos',
+        'USER': 'root',
+        'PASSWORD': 'SUA_SENHA',
+        'HOST': 'localhost',
+        'PORT': '3306',
+    }
+}
+```
+
+Substitua `SUA_SENHA` localmente pela senha configurada no MySQL. Não publique nem faça commit da sua senha real.
+
+Para testar a conexão e criar as tabelas iniciais do Django, execute:
+
+```powershell
+python manage.py migrate
+```
