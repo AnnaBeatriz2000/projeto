@@ -101,3 +101,27 @@ Para testar a conexão e criar as tabelas iniciais do Django, execute:
 ```powershell
 python manage.py migrate
 ```
+
+### 7. Criando a primeira aplicação Django
+
+Um projeto Django pode ser dividido em aplicações menores, cada uma responsável por um conjunto de funcionalidades. Para o Portal de Cursos, vamos começar com a aplicação `cursos`:
+
+```powershell
+python manage.py startapp cursos
+```
+
+Abra `portal_cursos/settings.py` e inclua `cursos` na lista `INSTALLED_APPS`:
+
+```python
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'cursos',
+]
+```
+
+A estrutura inicial do projeto está pronta para começar a desenvolver as funcionalidades.
