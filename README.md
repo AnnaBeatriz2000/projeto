@@ -125,3 +125,52 @@ INSTALLED_APPS = [
 ```
 
 A estrutura inicial do projeto está pronta para começar a desenvolver as funcionalidades.
+
+### 8. Iniciando o desenvolvimento com Vibe Coding
+
+Utilize o GitHub Copilot Chat no VS Code como agente de apoio. Quando disponível, selecione o modo **Agent**. O agente poderá analisar arquivos, propor alterações, criar arquivos e executar comandos conforme as permissões concedidas.
+
+Os alunos devem revisar as alterações e ter cuidado especial com comandos que instalem pacotes, alterem configurações ou executem operações no banco de dados.
+
+#### 8.1 Preparando a documentação
+
+Antes de solicitar implementações, organize os documentos produzidos pela equipe em uma pasta `documentacao` na raiz do projeto:
+
+```text
+portal_cursos/                     # raiz do projeto
+├── documentacao/
+│   ├── documento_requisitos.md
+│   ├── dicionario_dados.md
+│   └── prototipo.md
+├── cursos/
+├── portal_cursos/                  # configurações do Django
+├── manage.py
+├── requirements.txt               # lista de dependências, mantida pela equipe
+└── venv/                           # ambiente criado na etapa 3
+```
+
+Os documentos devem reunir o problema e os objetivos, os atores envolvidos, os requisitos funcionais e não funcionais, as regras de negócio, o modelo de dados e os protótipos das telas. O Django não cria `requirements.txt` automaticamente; mantenha esse arquivo com as dependências do projeto.
+
+#### 8.2 Primeiro passo: apresentar o projeto à IA
+
+Antes de pedir implementações, envie ao Copilot Chat uma apresentação do projeto e solicite uma análise. Você pode usar este prompt:
+
+```text
+Estamos desenvolvendo um Portal de Cursos como Projeto Integrador do curso Técnico em Informática.
+
+O projeto utiliza Python, Django, MySQL e Bootstrap.
+
+Você será nosso assistente de desenvolvimento e deverá nos auxiliar na construção da aplicação.
+
+Antes de implementar qualquer código, analise os documentos disponíveis na pasta documentacao, considerando:
+- Problema e objetivos;
+- Atores envolvidos;
+- Requisitos funcionais e não funcionais;
+- Regras de negócio;
+- Modelo de dados;
+- Protótipos das telas.
+
+Apresente uma análise geral do projeto, identificando possíveis inconsistências e informações ausentes.
+
+Sugira uma organização das aplicações Django e das principais funcionalidades.
+```
