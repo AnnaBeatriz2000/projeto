@@ -36,3 +36,35 @@ Instale o conector para comunicação com o MySQL:
 ```powershell
 pip install mysqlclient
 ```
+
+### 5. Criando o projeto Django
+
+No terminal do VS Code, execute:
+
+```powershell
+django-admin startproject portal_cursos .
+```
+
+A estrutura criada será semelhante a esta (`venv/` foi criada na etapa 3):
+
+```text
+portal_cursos/                 # pasta do projeto
+├── manage.py
+├── portal_cursos/              # configurações do Django
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   ├── asgi.py
+│   └── wsgi.py
+└── venv/
+```
+
+O Django não cria um arquivo `requirements.txt` com esse comando.
+
+Execute o servidor de desenvolvimento:
+
+```powershell
+python manage.py runserver
+```
+
+Abra [http://127.0.0.1:8000/](http://127.0.0.1:8000/) no navegador. Se a página inicial do Django aparecer, o projeto foi criado corretamente. Para interromper o servidor, pressione **Ctrl + C** no terminal.
