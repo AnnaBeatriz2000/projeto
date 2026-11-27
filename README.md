@@ -174,3 +174,102 @@ Apresente uma análise geral do projeto, identificando possíveis inconsistênci
 
 Sugira uma organização das aplicações Django e das principais funcionalidades.
 ```
+
+## PetSocial — integração da aplicação com Django e MySQL
+
+O PetSocial é um portal para adoção de animais e conexão entre adotantes, tutores e ONGs. A interface web foi ligada a um backend Django com persistência MySQL. A prévia antiga do GitHub Pages continua estática; para usar cadastro, login, publicações, mensagens e uploads, é necessário executar o Django.
+
+### Tecnologias e estrutura
+
+- **Backend:** Python, Django 5.2 e `mysqlclient`.
+- **Banco:** MySQL, configurado pelo arquivo local `.env`; migrations do Django criam as tabelas.
+- **Frontend:** páginas HTML existentes, JavaScript e Bootstrap, servidas pelo Django.
+- `api/`: modelos, administração, endpoints, URLs, migrations e testes.
+- `config/`: configurações, URLs e ASGI/WSGI do projeto.
+- `static/js/api.js`: helper same-origin para chamadas HTTP, CSRF, erros e escape de HTML.
+- `static/js/chat-widget.js`: widget de chat.
+- `media/`: uploads de imagens durante o desenvolvimento.
+- `manage.py`: comandos do Django.
+
+### Funcionalidades conectadas
+
+- Cadastro, login, logout e sessão com autenticação Django e senhas armazenadas com hash.
+- Anúncios de pets com imagem, espécie, idade, porte, descrição e status de adoção.
+- Feed com curtidas; tutores/ONGs podem publicar e administrar seus anúncios.
+- Solicitação de adoção, mensagem inicial ao tutor e notificação.
+- Conversas e envio/leitura de mensagens entre usuários.
+- Edição de perfil e foto.
+- Stories de pets (visíveis por 24 horas) e histórias de sucesso com reações.
+- Painel administrativo do Django.
+
+A interface principal está em `index.html`; `historias.html` usa a API de histórias de sucesso. As páginas antigas `petsocial.html`, `login.html` e `chat.html` redirecionam para o fluxo Django. A autenticação usa sessões e proteção CSRF; imagens enviadas são validadas e limitadas a 800 KB.
+
+### Modelos e dados
+
+O app `api` define `Usuario`, `Pet`, `Publicacao`, `Comentario`, `Curtida`, `Adocao`, `Mensagem`, `Seguidor`, `ImagemPet` e `Notificacao`, além de `StoryMoment`, `HistoriaSucesso` e `CurtidaHistoria` para os recursos de stories. Há restrições de unicidade para impedir curtidas ou relacionamentos duplicados. O e-mail do usuário tem limite de 191 caracteres para compatibilidade com o limite de índices da instalação MySQL/WAMP usada no desenvolvimento.
+
+### Configuração local no Windows
+
+Requisitos: Python 3.10 ou superior, MySQL Server/WAMP e MySQL Workbench. Na raiz do projeto:
+
+```powershell
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+Copy-Item .env.example .env
+```
+
+Se a ativação do ambiente virtual for bloqueada pelo PowerShell, permita scripts somente na sessão atual e ative novamente:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+```
+
+No Workbench, crie o banco vazio (se ainda não existir):
+
+```sql
+CREATE DATABASE IF NOT EXISTS petsocial CHARACTER SET utf8mb4;
+```
+
+Edite `.env` com o nome do banco, host, porta e usuário da sua instalação MySQL. Defina uma chave aleatória em `DJANGO_SECRET_KEY`; por exemplo:
+
+```powershell
+python -c "import secrets; print(secrets.token_urlsafe(50))"
+```
+
+Em instalações WAMP locais nas quais `root` realmente não tem senha, `DB_PASSWORD=` pode ficar vazio. Isso é apenas uma configuração de desenvolvimento local; não use `root` sem senha em produção. O `.env` é ignorado pelo Git e não deve ser compartilhado. Use `.env.example` como referência, nunca coloque credenciais reais no repositório.
+
+O projeto foi configurado para usar o banco `petsocial`. O schema existente `petsocial_db` não faz parte dessa configuração e deve permanecer separado. **Não crie as tabelas manualmente no Workbench:** o Django administra a estrutura por migrations. Execute:
+
+```powershell
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+```
+
+Abra <http://127.0.0.1:8000/>. O painel administrativo está em <http://127.0.0.1:8000/admin/>. Para desligar o servidor, pressione **Ctrl+C** no terminal.
+
+### API principal
+
+| Método e rota | Uso |
+| --- | --- |
+| `GET /api/session/` | Consultar a sessão atual |
+| `POST /api/register/`, `POST /api/login/`, `POST /api/logout/` | Cadastro e autenticação |
+| `GET/POST /api/pets/` | Listar e publicar pets |
+| `DELETE /api/pets/<id>/`, `POST /api/pets/<id>/status/` | Remover anúncio e alterar status (com autorização) |
+| `POST /api/pets/<id>/likes/`, `POST /api/pets/<id>/adoptions/` | Curtir e solicitar adoção |
+| `GET /api/conversations/`, `GET/POST /api/messages/` | Listar conversas e consultar/enviar mensagens |
+| `PATCH /api/profile/`, `POST /api/profile/photo/` | Editar perfil e foto |
+| `GET/POST /api/pet-stories/` | Consultar e publicar stories de pets |
+| `GET/POST /api/success-stories/`, `POST /api/success-stories/<id>/likes/` | Histórias de sucesso e reações |
+
+### Testes e banco
+
+Os testes do app usam SQLite em memória, sem alterar o banco MySQL:
+
+```powershell
+python manage.py test api --settings=config.test_settings
+```
+
+As migrations do PetSocial foram aplicadas com sucesso ao schema `petsocial` na instalação WAMP de desenvolvimento. Para conferir as tabelas pelo Workbench, selecione/atualize `petsocial` e execute `SHOW TABLES;`.
