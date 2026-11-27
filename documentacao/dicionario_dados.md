@@ -105,3 +105,45 @@
 ## Pontos a confirmar com a equipe
 
 Definir cat?logo final de esp?cies, portes, idades e tipos de hist?ria; campos obrigat?rios e opcionais; limite e formatos de imagem; regras de exclus?o; se pet pode ter v?rias publica??es; integridade entre tutor da publica??o e tutor do pet; e cardinalidade/limites de solicita??es de ado??o.
+## Recorte do dicionário original recebido
+
+A imagem enviada mostra a tabela completa `usuarios` e apenas o início da tabela `animais`. Os campos abaixo reproduzem somente o trecho legível; não foram inferidos os campos que ficaram fora do recorte.
+
+### `usuarios` (definição do documento recebido)
+
+| Campo | Tipo e tamanho | Chave | Nulo | Descrição informada |
+| --- | --- | --- | --- | --- |
+| `id_usuario` | INT | PK | Não | Identificador único do usuário. |
+| `nome` | VARCHAR(100) | — | Não | Nome completo do usuário. |
+| `email` | VARCHAR(150) | UNIQUE | Não | E-mail utilizado para login. |
+| `senha` | VARCHAR(255) | — | Não | O documento descreve como “senha criptografada”; implementar e documentar como hash não reversível. |
+| `tipo_usuario` | ENUM | — | Não | Valores visíveis: `ADOTANTE`, `ONG_DOADOR` ou `ADMIN`. Confirmar se `ONG_DOADOR` representa ONGs e tutores/protetores em um único papel. |
+| `telefone` | VARCHAR(20) | — | Sim | Número de telefone. |
+| `data_cadastro` | DATETIME | — | Não | Data de cadastro no sistema. |
+
+### `animais` (trecho visível)
+
+| Campo | Tipo e tamanho | Chave | Nulo | Descrição informada |
+| --- | --- | --- | --- | --- |
+| `id_animal` | INT | PK | Não | Identificador do animal. |
+| `nome` | VARCHAR(100) | — | Não | Nome do animal. |
+| `especie` | VARCHAR(50) | — | Não | Espécie (cão, gato etc.). |
+| `raca` | VARCHAR(100) | — | Sim | Raça do animal. |
+
+A captura termina após o campo `raca`; os demais campos e tabelas do dicionário original ainda não foram recebidos.
+
+## Diferenças entre o recorte original e o modelo Django atual
+
+| Item | Dicionário recebido | Modelo atual | Decisão pendente |
+| --- | --- | --- | --- |
+| Entidade de animais | Tabela `animais`, chave `id_animal` | Tabela `pets`, chave `id_pet` | Confirmar se o nome canônico deve ser `animais` ou `pets`. |
+| Identificador | `INT` | `BigAutoField` | Escolher o tipo conforme o banco e os requisitos de crescimento. |
+| Nome de usuário | `VARCHAR(100)` | `CharField(120)` | Alinhar o limite aprovado. |
+| E-mail | `VARCHAR(150)`, único | `EmailField(191)`, único | Alinhar tamanho e validação; o limite atual atende à instalação MySQL/WAMP usada. |
+| Senha | `VARCHAR(255)` | Campo Django de senha com hash | Registrar que é hash de senha, não criptografia reversível; confirmar o tamanho necessário para os hasheadores adotados. |
+| Tipo de usuário | `ADOTANTE`, `ONG_DOADOR`, `ADMIN` | `adotante`, `tutor`, `ong`, além de flags de administrador Django | Definir papéis oficiais e mapear migração/permissões antes de alterar o sistema. |
+| Telefone | `VARCHAR(20)`, opcional | `CharField(30)`, opcional | Alinhar limite. |
+| Espécie | `VARCHAR(50)` | `CharField(60)` limitado às opções `cao`, `gato`, `outro` | Confirmar lista de espécies e se o campo deve ser livre ou enumerado. |
+| Raça | `VARCHAR(100)`, opcional | `CharField(100)`, opcional | Compatível no trecho visível. |
+
+Este recorte atualiza a fonte de requisitos, mas não altera automaticamente os modelos nem as migrations: o banco `petsocial` já recebeu migrations e a equipe precisa aprovar nomes, tipos e papéis antes de uma migração de esquema.
