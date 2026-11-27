@@ -96,3 +96,26 @@ Administrador -> Painel Django
 - Definir navega??o em telas pequenas, modais e comportamento ap?s login/logout.
 - As p?ginas legadas `login.html`, `chat.html` e `petsocial.html` redirecionam para o fluxo principal; revisar se links externos ainda dependem dessas URLs.
 - Atualizar este documento e o Figma quando a equipe aprovar requisitos e regras de neg?cio.
+## Atualização visual: login e cadastro
+
+### Direção visual
+
+- Referência de linguagem visual de redes sociais como o Instagram: apresentação limpa, foco no formulário e hierarquia visual simples, sem reproduzir marca, logotipo ou elementos proprietários.
+- Paleta suave e acolhedora: fundo rosa-claro/lilás, gradiente rosa-lilás nos botões, texto ameixa escuro e superfícies brancas.
+- Cartão central com cantos arredondados, sombra suave, campos claros e rótulos visíveis. A identidade PetSocial usa patinhas e ilustrações de cães/gatos.
+- Em telas largas, composição dividida: painel de identidade/boas-vindas à esquerda e formulário à direita. Em celular, o painel ilustrativo é ocultado e o formulário ocupa a largura disponível.
+- Implementação usa classes do Bootstrap 5 para grid, formulário e botões, com CSS próprio para as cores e o acabamento; as funções existentes de autenticação e cadastro são preservadas.
+
+### Fluxo de login
+
+1. Cabeçalho “Entrar”, mensagem acolhedora, campo de e-mail e campo de senha.
+2. Ação principal “Entrar”, link “Esqueci minha senha” e atalho para cadastro.
+3. Acesso administrativo separado visualmente das ações do usuário.
+
+### Fluxo de cadastro
+
+1. Cabeçalho “Criar conta” e campos de nome, e-mail, senha e tipo de perfil.
+2. Ação principal “Criar minha conta” e atalho para entrar.
+3. Tipos apresentados: adotante, tutor e ONG.
+
+O layout está aplicado ao formulário da página principal do PetSocial (`index.html`). O arquivo do Figma não foi alterado; usar esta especificação como referência ao atualizar o protótipo visual e validar os estados de erro, foco, carregamento e responsividade.
