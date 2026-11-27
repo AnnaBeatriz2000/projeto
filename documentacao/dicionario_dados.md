@@ -183,3 +183,26 @@ A nova captura permite completar os campos restantes da tabela `animais` e regis
 - O documento chama a tabela de solicitações `solicitacoes_adocao`, com `data_solicitacao` e `observacoes`; o código usa `adocoes`, `data_adocao` e não tem observações. Os estados também diferem (`Pendente/Aprovada/Rejeitada` versus `solicitada/aprovada/concluida/recusada`).
 
 Essas diferenças foram registradas para revisão; não alterei modelos, migrations nem dados existentes.
+## Complemento da captura mais recente
+
+### `moderacao_anuncios`
+
+| Campo | Tipo e tamanho | Chave | Nulo | Descrição informada |
+| --- | --- | --- | --- | --- |
+| `id_moderacao` | INT | PK | Não | Identificador da moderação. |
+| `id_animal` | INT | FK | Não | Animal moderado. |
+| `id_admin` | INT | FK | Não | Administrador responsável. |
+| `motivo` | VARCHAR(255) | — | Não | Justificativa da ação. |
+| `data_acao` | DATETIME | — | Não | Data da moderação. |
+
+### Relacionamentos informados
+
+| Tabela de origem | Cardinalidade | Tabela de destino |
+| --- | --- | --- |
+| `usuarios` | 1:N | `animais` |
+| `usuarios` | 1:N | `solicitacoes_adocao` |
+| `animais` | 1:N | `solicitacoes_adocao` |
+| `usuarios` | 1:N | `moderacao_anuncios` |
+| `animais` | 1:N | `moderacao_anuncios` |
+
+A captura mostra também a tabela de moderação e estes relacionamentos. A terceira página não está visível nesta imagem; confirmar se contém informações adicionais antes de considerar o dicionário original completo.
