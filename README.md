@@ -273,3 +273,46 @@ python manage.py test api --settings=config.test_settings
 ```
 
 As migrations do PetSocial foram aplicadas com sucesso ao schema `petsocial` na instalação WAMP de desenvolvimento. Para conferir as tabelas pelo Workbench, selecione/atualize `petsocial` e execute `SHOW TABLES;`.
+## Análise preliminar do projeto PetSocial
+
+> **Limitação da análise:** no repositório `AnnaBeatriz2000/projeto` só foi localizado este `README.md`; não há pasta `documentacao/` nem arquivos separados de requisitos, dicionário de dados ou protótipo. A análise abaixo é preliminar, baseada na descrição do README e na implementação atual do PetSocial. Para confirmar o alinhamento com o trabalho da equipe, esses documentos ainda precisam ser adicionados.
+
+### Problema, objetivo e atores
+
+O PetSocial busca conectar pessoas interessadas em adotar a animais disponíveis, aproximando adotantes, tutores e ONGs. Os atores identificados na aplicação são **adotante**, **tutor**, **ONG** e **administrador**. Ainda é necessário formalizar as responsabilidades e permissões de cada perfil e definir como medir o sucesso do serviço.
+
+### Requisitos identificados
+
+As funcionalidades presentes ou previstas na aplicação incluem cadastro, login, perfis, anúncios de pets, feed e curtidas, solicitação de adoção, conversas e mensagens, stories temporários e histórias de sucesso. Comentários, seguidores e notificações têm modelos no banco, mas não têm operações completas na API atual.
+
+Python, Django, MySQL e Bootstrap estão definidos como tecnologias. Requisitos não funcionais ainda precisam ser acordados e testáveis: acessibilidade, uso em dispositivos móveis, desempenho, privacidade, retenção de dados, backups e disponibilidade. A autenticação usa sessões Django e proteção CSRF; imagens enviadas têm limite de tamanho.
+
+### Regras de negócio observadas e decisões pendentes
+
+- Tutores e ONGs podem publicar anúncios de pets; adotantes não podem.
+- Um usuário não pode solicitar a adoção do próprio pet; solicitações duplicadas são verificadas pela aplicação.
+- As curtidas possuem restrição para evitar duplicidade.
+- Stories de pets ficam disponíveis por 24 horas.
+- O fluxo de aprovação ou recusa de adoções e os efeitos de cada etapa no status do anúncio ainda precisam ser definidos.
+- É necessário decidir quem pode publicar histórias de sucesso, quais categorias são aceitas e como denúncias e moderação funcionam.
+
+### Modelo de dados e inconsistências a validar
+
+Os modelos incluem usuários, pets, publicações, comentários, curtidas, adoções, mensagens, seguidores, imagens, notificações, stories e histórias de sucesso. Confirme se cada publicação deve estar ligada a exatamente um pet e se o tutor da publicação deve sempre ser o tutor cadastrado do pet. A idade está armazenada como texto, embora seja preciso decidir se o requisito pede uma faixa etária ou idade numérica com unidade. Também faltam definições documentadas de campos obrigatórios, formatos, estados válidos e regras de exclusão/retensão.
+
+### Protótipos e lacunas
+
+O README aponta para um [protótipo no Figma](https://www.figma.com/make/1kT8CnOWGkEgfTolfZbFzh/Pet-Social-Login-Page?t=GaJowEEYZSWFmBiV-20&fullscreen=1), mas não há telas exportadas ou especificações de fluxo para comparar com os requisitos. Recomenda-se incluir na documentação os fluxos de cadastro, publicação de pet, solicitação de adoção, conversa e administração, além de registrar inconsistências e decisões aprovadas pela equipe.
+
+### Organização Django sugerida
+
+Para o MVP, a aplicação atual `api` pode continuar concentrando os endpoints. À medida que o projeto crescer, uma divisão por responsabilidade facilitaria a manutenção:
+
+- `accounts`: usuários, perfis, autenticação e papéis;
+- `pets`: cadastro, imagens, anúncios e status dos pets;
+- `adoptions`: solicitações e fluxo de aprovação;
+- `social`: publicações, comentários, curtidas, seguidores e notificações;
+- `messaging`: conversas e mensagens;
+- `stories`: stories temporários e histórias de sucesso.
+
+A configuração do projeto permanece em `config`. Antes de ampliar funcionalidades, a equipe deve consolidar `documento_requisitos.md`, `dicionario_dados.md` e `prototipo.md` em `documentacao/`.
