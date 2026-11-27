@@ -130,7 +130,7 @@ A imagem enviada mostra a tabela completa `usuarios` e apenas o início da tabel
 | `especie` | VARCHAR(50) | — | Não | Espécie (cão, gato etc.). |
 | `raca` | VARCHAR(100) | — | Sim | Raça do animal. |
 
-A captura termina após o campo `raca`; os demais campos e tabelas do dicionário original ainda não foram recebidos.
+A captura adicional mostra mais campos de `animais` e a tabela `solicitacoes_adocao`; as demais páginas/tabelas ainda não estão legíveis no material recebido.
 
 ## Diferenças entre o recorte original e o modelo Django atual
 
@@ -147,3 +147,39 @@ A captura termina após o campo `raca`; os demais campos e tabelas do dicionári
 | Raça | `VARCHAR(100)`, opcional | `CharField(100)`, opcional | Compatível no trecho visível. |
 
 Este recorte atualiza a fonte de requisitos, mas não altera automaticamente os modelos nem as migrations: o banco `petsocial` já recebeu migrations e a equipe precisa aprovar nomes, tipos e papéis antes de uma migração de esquema.
+## Complemento do dicionário original — captura adicional
+
+A nova captura permite completar os campos restantes da tabela `animais` e registrar a tabela `solicitacoes_adocao`.
+
+### Campos adicionais de `animais`
+
+| Campo | Tipo e tamanho | Chave | Nulo | Descrição informada |
+| --- | --- | --- | --- | --- |
+| `idade` | INT | — | Sim | Idade em anos. |
+| `sexo` | ENUM | — | Sim | `M` ou `F`. |
+| `porte` | ENUM | — | Sim | Pequeno, Médio ou Grande. |
+| `descricao` | TEXT | — | Sim | Características do animal. |
+| `localizacao` | VARCHAR(150) | — | Sim | Cidade ou região. |
+| `status_adocao` | ENUM | — | Não | Disponível, Em análise ou Adotado. |
+| `data_cadastro` | DATETIME | — | Não | Data de cadastro. |
+| `id_responsavel` | INT | FK | Não | Identificador da ONG ou doador responsável. |
+
+### `solicitacoes_adocao` (definição do documento recebido)
+
+| Campo | Tipo e tamanho | Chave | Nulo | Descrição informada |
+| --- | --- | --- | --- | --- |
+| `id_solicitacao` | INT | PK | Não | Identificador da solicitação. |
+| `id_animal` | INT | FK | Não | Animal solicitado. |
+| `id_adotante` | INT | FK | Não | Usuário interessado. |
+| `data_solicitacao` | DATETIME | — | Não | Data da solicitação. |
+| `status_solicitacao` | ENUM | — | Não | Pendente, Aprovada ou Rejeitada. |
+| `observacoes` | TEXT | — | Sim | Informações complementares. |
+
+### Diferenças adicionais para decidir antes de alterar o banco
+
+- O dicionário define `idade` como número de anos e inclui `sexo` e `localizacao`; o modelo Django atual usa idade textual e não possui esses dois campos.
+- `status_adocao` no documento usa “Em análise”; o código atual usa `em-processo`. Definir valores canônicos e um mapeamento antes de migrar.
+- `id_responsavel` do documento corresponde semanticamente ao responsável do pet, mas o código usa `id_usuario`.
+- O documento chama a tabela de solicitações `solicitacoes_adocao`, com `data_solicitacao` e `observacoes`; o código usa `adocoes`, `data_adocao` e não tem observações. Os estados também diferem (`Pendente/Aprovada/Rejeitada` versus `solicitada/aprovada/concluida/recusada`).
+
+Essas diferenças foram registradas para revisão; não alterei modelos, migrations nem dados existentes.
